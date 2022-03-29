@@ -14,7 +14,8 @@ const RegisterForm: React.FC = (props)=>
 	return (
 		<React.Fragment>
 
-			<form className={styles.registerForm}>
+			<form className={styles.registerForm}
+			>
 
 				<div className={styles.registerTitle}>
 					<label className={styles.registerTitleLabel}>
@@ -79,7 +80,7 @@ const RegisterForm: React.FC = (props)=>
 					<MuiMat.Button 
 					variant="contained"
 					startIcon={<MuiIcons.Login />}
-					type="submit"
+					onClick={()=>{window.confirm("Implement this button")}}
 					>
 						{globalCTX.locale.register}
 					</MuiMat.Button>
