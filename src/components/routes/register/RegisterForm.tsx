@@ -2,11 +2,14 @@ import React from "react";
 import styles from './RegisterForm.module.css';
 import * as MuiMat from '@mui/material';
 import * as MuiIcons from '@mui/icons-material';
+import GlobalContext from "../../../context/global-context";
 
 
 const RegisterForm: React.FC = (props)=>
 {
 	const [margins] = React.useState('1rem');
+	const globalCTX = React.useContext(GlobalContext);
+
 	return (
 		<React.Fragment>
 
@@ -16,8 +19,8 @@ const RegisterForm: React.FC = (props)=>
 				style={{marginTop: margins, marginBottom: margins}}
 				fullWidth
 				required
-				label="Username"
-				placeholder="Username"
+				label={globalCTX.locale.username}
+				placeholder={globalCTX.locale.usernameHint}
 				InputProps={{startAdornment:(
 					<MuiMat.InputAdornment position="start">
 					  <MuiIcons.AccountCircle />
@@ -28,9 +31,9 @@ const RegisterForm: React.FC = (props)=>
 				<MuiMat.TextField
 				style={{marginTop: margins, marginBottom: margins}}
 				fullWidth
-				label="Email"
+				label={globalCTX.locale.email}
 				type="email"
-				placeholder="Enter your email address"
+				placeholder={globalCTX.locale.emailHint}
 				autoComplete="current-email"
 				InputProps={{startAdornment:(
 					<MuiMat.InputAdornment position="start">
@@ -42,9 +45,9 @@ const RegisterForm: React.FC = (props)=>
 				<MuiMat.TextField
 				style={{marginTop: margins, marginBottom: margins}}
 				fullWidth
-				label="Password"
+				label={globalCTX.locale.password}
 				type="password"
-				placeholder="Enter a password"
+				placeholder={globalCTX.locale.passwordHint}
 				InputProps={{startAdornment:(
 					<MuiMat.InputAdornment position="start">
 					  <MuiIcons.Key />
@@ -55,9 +58,9 @@ const RegisterForm: React.FC = (props)=>
 				<MuiMat.TextField
 				style={{marginTop: margins, marginBottom: margins}}
 				fullWidth
-				label="RePassword"
+				label={globalCTX.locale.re_password}
 				type="password"
-				placeholder="Re-enter the password"
+				placeholder={globalCTX.locale.re_passwordHint}
 				InputProps={{startAdornment:(
 					<MuiMat.InputAdornment position="start">
 					  <MuiIcons.LockReset />
