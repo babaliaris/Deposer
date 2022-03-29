@@ -11,6 +11,7 @@
 
 body 
 {
+  /*******************Some Default Stuff*******************/
   margin      : 0;
   font-family : 'Patrick Hand', cursive, -apple-system, 
   BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -19,6 +20,20 @@ body
 
   -webkit-font-smoothing  : antialiased;
   -moz-osx-font-smoothing : grayscale;
+  /*******************Some Default Stuff*******************/
+
+
+  /*-_-_-_-_-_-_-_-_-_-_-Color Theming-_-_-_-_-_-_-_-_-_-_-*/
+  --color-dark-blue : hsla(211, 100%, 6%, 1);
+  --color-dark-green: hsla(181, 92%, 15%, 1);
+  --color-light-blue: hsla(201, 81%, 40%, 1);
+  --color-light-cyan: hsla(193, 86%, 48%, 1);
+  --color-cyan      : hsla(194, 90%, 45%, 1);
+  --color-white     : hsla(360, 100%, 100%, 1);
+  --color-black     : hsla(0, 0%, 0%, 1);
+  --color-warning   : hsla(53, 100%, 50%, 1);
+  --color-danger    : hsla(0, 100%, 50%, 1);
+  /*-_-_-_-_-_-_-_-_-_-_-Color Theming-_-_-_-_-_-_-_-_-_-_-*/
 }
 
 
