@@ -1,10 +1,12 @@
 import React from "react";
 
-const Register: React.FC<any> = (props)=>
+import RegisterForm from "./RegisterForm";
+
+const Register: React.FC = (props)=>
 {
 	return (
 		<React.Fragment>
-			Register Works!
+			<RegisterForm/>
 		</React.Fragment>
 	);
 };
