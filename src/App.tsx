@@ -1,10 +1,10 @@
 import React from 'react';
-import styles from './App.module.css';
+//import styles from './App.module.css';
 
 function App() {
   return (
     <React.Fragment>
-      App root.
+      <label style={{fontSize: '4rem'}}>App root.</label>
     </React.Fragment>
   );
 }
