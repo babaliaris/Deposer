@@ -10,4 +10,6 @@ export class ElGR implements LocaleI
 	readonly passwordHint					: string = "Εισάγετε έναν κωδικό";
 	readonly re_password					: string = "Επανάληψη Κωδικού";
 	readonly re_passwordHint				: string = "Ξανά δώστε τον κωδικό";
+	readonly register						: string = "Εγγραφή";
+	readonly login							: string = "Είσοδος";
 }

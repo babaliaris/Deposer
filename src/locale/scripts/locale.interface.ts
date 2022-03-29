@@ -8,4 +8,6 @@ export interface LocaleI
 	  readonly passwordHint				: string;
 	  readonly re_password				: string;
 	  readonly re_passwordHint			: string;
+	  readonly register					: string;
+	  readonly login					: string;
 }

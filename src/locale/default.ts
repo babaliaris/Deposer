@@ -10,4 +10,6 @@ export class Default implements LocaleI
 	readonly passwordHint					: string = "Enter a password";
 	readonly re_password					: string = "Re-Password";
 	readonly re_passwordHint				: string = "Re-enter the password";
+	readonly register						: string = "Register";
+	readonly login							: string = "Login";
 }

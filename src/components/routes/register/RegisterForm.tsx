@@ -7,13 +7,20 @@ import GlobalContext from "../../../context/global-context";
 
 const RegisterForm: React.FC = (props)=>
 {
-	const [margins] = React.useState('1rem');
 	const globalCTX = React.useContext(GlobalContext);
+
+	const margins = '1rem';
 
 	return (
 		<React.Fragment>
 
 			<form className={styles.registerForm}>
+
+				<div className={styles.registerTitle}>
+					<label className={styles.registerTitleLabel}>
+						{globalCTX.locale.register}
+					</label>
+				</div>
 
 				<MuiMat.TextField
 				style={{marginTop: margins, marginBottom: margins}}
@@ -67,6 +74,16 @@ const RegisterForm: React.FC = (props)=>
 					</MuiMat.InputAdornment>
 				)}}
 				/>
+
+				<div className={styles.registerButton}>
+					<MuiMat.Button 
+					variant="contained"
+					startIcon={<MuiIcons.Login />}
+					type="submit"
+					>
+						{globalCTX.locale.register}
+					</MuiMat.Button>
+				</div>
 
 			</form>
 		</React.Fragment>
