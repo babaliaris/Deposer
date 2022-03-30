@@ -44,7 +44,7 @@ const RegisterForm: React.FC<RegisterFormI> = (props)=>
 		passMatch: true
 	});
 
-
+	//Reused in single state forms.
 	const handlerFunctionality = React.useCallback( 
 		(value: string, setField: any, setFieldValid: any, setFieldError: any)=>
 	{
@@ -63,6 +63,7 @@ const RegisterForm: React.FC<RegisterFormI> = (props)=>
 
 	}, [globalCTX]);
 
+	//Username Handler (Single state)
 	const onUsernameHandler = React.useCallback( (obj)=>
 	{
 		let v = obj.target.value as string;
@@ -70,6 +71,7 @@ const RegisterForm: React.FC<RegisterFormI> = (props)=>
 
 	}, [handlerFunctionality]);
 
+	//Email Handler (Single state)
 	const onEmailHandler 	= React.useCallback( (obj)=>
 	{
 		let v = obj.target.value as string;
@@ -77,6 +79,7 @@ const RegisterForm: React.FC<RegisterFormI> = (props)=>
 
 	}, [handlerFunctionality]);
 
+	//Pass Handler (Multiple states in one object)
 	const onPassHandler 	= React.useCallback( (obj)=>
 	{
 		let v = obj.target.value as string;
@@ -101,6 +104,7 @@ const RegisterForm: React.FC<RegisterFormI> = (props)=>
 
 	}, [globalCTX, pass]);
 
+	//RePass Handler (Multiple states in one object)
 	const onRePassHandler 	= React.useCallback( (obj)=>
 	{
 		let v = obj.target.value as string;
@@ -126,10 +130,54 @@ const RegisterForm: React.FC<RegisterFormI> = (props)=>
 	}, [globalCTX, pass]);
 
 
+	//Check form validity as a whole.
+	const checkFormValidity = React.useCallback((): boolean=>
+	{
+		let valid = true;
+
+		if (username.trim().length === 0)
+		{
+			setUsernameValid(false);
+			setUsernameError(globalCTX.locale.required);
+			valid = false;
+		}
+
+		if (email.trim().length === 0)
+		{
+			setEmailValid(false);
+			setEmailError(globalCTX.locale.required);
+			valid = false;
+		}
+
+		if (pass.pass.trim().length === 0)
+		{
+			setPass( (prevPass: PasswordStateI):PasswordStateI=>
+			{
+				return {...prevPass, passValid: false, passError: globalCTX.locale.required}
+			});
+			valid = false;
+		}
+
+		if (pass.rePass.trim().length === 0)
+		{
+			setPass( (prevPass: PasswordStateI):PasswordStateI=>
+			{
+				return {...prevPass, rePassValid: false, rePassError: globalCTX.locale.required}
+			});
+			valid = false;
+		}
+
+		return valid;
+	}, [username, email, pass, globalCTX]);
+
+
+	//Submit Form Functionality.
 	const {onFormSubmit} = props;
 	const onSubmit = React.useCallback(()=>
 	{
 		let account: AccountModel = new AccountModel();
+
+		if ( !checkFormValidity() ) return;
 
 		account.m_username 	= username;
 		account.m_email 	= email;
@@ -137,10 +185,10 @@ const RegisterForm: React.FC<RegisterFormI> = (props)=>
 
 		onFormSubmit(account);
 
-	}, [username, email, pass, onFormSubmit]);
+	}, [username, email, pass, onFormSubmit, checkFormValidity]);
 
 
-
+	//Rendering.
 	const margins = '1rem';
 	return (
 		<React.Fragment>
