@@ -10,4 +10,7 @@ export interface LocaleI
 	  readonly re_passwordHint			: string;
 	  readonly register					: string;
 	  readonly login					: string;
+	  readonly required					: string;
+	  readonly invalidEmail				: string;
+	  readonly invalidPassMatch			: string;
 }

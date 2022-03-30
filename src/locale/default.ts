@@ -12,4 +12,7 @@ export class Default implements LocaleI
 	readonly re_passwordHint				: string = "Re-enter the password";
 	readonly register						: string = "Register";
 	readonly login							: string = "Login";
+	readonly required						: string = "This field is required";
+	readonly invalidEmail					: string = "Invalid email address";
+	readonly invalidPassMatch				: string = "Passwords do not match";
 }
