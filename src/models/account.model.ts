@@ -1,5 +1,6 @@
 export class AccountModel
 {
+	public m_id				: number = -1;
 	public m_username		: string = "";
 	public m_email			: string = "";
 	public m_password		: string = "";
