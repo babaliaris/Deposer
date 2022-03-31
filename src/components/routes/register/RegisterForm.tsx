@@ -4,6 +4,8 @@ import * as MuiMat from '@mui/material';
 import * as MuiIcons from '@mui/icons-material';
 import GlobalContext from "../../../context/global-context";
 import { AccountModel } from "../../../models/account.model";
+import * as Formik from 'formik';
+import * as Yup from 'yup';
 
 
 interface RegisterFormI
@@ -12,180 +14,52 @@ interface RegisterFormI
 }
 
 
-interface PasswordStateI
-{
-	pass		: string
-	passValid	: boolean
-	passError	: string
-
-	rePass		: string
-	rePassValid	: boolean
-	rePassError	: string
-
-	passMatch	: boolean
-}
-
-
 const RegisterForm: React.FC<RegisterFormI> = (props)=>
 {
 	const globalCTX = React.useContext(GlobalContext);
 
-	const [username, setUsername] 			= React.useState<string>('');
-	const [usernameError, setUsernameError]	= React.useState<string>('');
-	const [usernameValid, setUsernameValid] = React.useState<boolean>(true);
+	//Validation Schema.
+	const validationSchema = Yup.object(
+		{
+			username: Yup
+				.string()
+				.required(globalCTX.locale.required),
 
-	const [email, setEmail] 				= React.useState<string>('');
-	const [emailError, setEmailError]		= React.useState<string>('');
-	const [emailValid, setEmailValid] 		= React.useState<boolean>(true);
+			email: Yup
+				.string()
+				.email(globalCTX.locale.invalidEmail)
+				.required(globalCTX.locale.required),
 
-	const [pass, setPass] 					= React.useState<PasswordStateI>({
-		pass: '', passValid: true, passError: '',
-		rePass: '', rePassValid: true, rePassError: '',
-		passMatch: true
+			pass: Yup
+				.string()
+				.required(globalCTX.locale.required),
+
+			repass: Yup
+				.string()
+				.required(globalCTX.locale.required)
+				.oneOf([Yup.ref('pass'), null], globalCTX.locale.invalidPassMatch)
+		}
+	);
+	
+
+	//Setup Formik.
+	const formik = Formik.useFormik({
+		validationSchema: validationSchema,
+		initialValues: {
+			username: '',
+			email: '',
+			pass: '',
+			repass: ''
+		},
+		onSubmit: (values)=>
+		{
+			let account 		= new AccountModel();
+			account.m_username 	= values.username;
+			account.m_email 	= values.email;
+			account.m_password 	= values.pass;
+			props.onFormSubmit(account);
+		}
 	});
-
-	//Reused in single state forms.
-	const handlerFunctionality = React.useCallback( 
-		(value: string, setField: any, setFieldValid: any, setFieldError: any)=>
-	{
-		setField(value);
-
-		if (value.trim().length === 0) 
-		{
-			setFieldValid(false);
-			setFieldError(globalCTX.locale.required);
-		}
-
-		else
-		{
-			setFieldValid(true);
-		}
-
-	}, [globalCTX]);
-
-	//Username Handler (Single state)
-	const onUsernameHandler = React.useCallback( (obj)=>
-	{
-		let v = obj.target.value as string;
-		handlerFunctionality(v, setUsername, setUsernameValid, setUsernameError);
-
-	}, [handlerFunctionality]);
-
-	//Email Handler (Single state)
-	const onEmailHandler 	= React.useCallback( (obj)=>
-	{
-		let v = obj.target.value as string;
-		handlerFunctionality(v, setEmail, setEmailValid, setEmailError);
-
-	}, [handlerFunctionality]);
-
-	//Pass Handler (Multiple states in one object)
-	const onPassHandler 	= React.useCallback( (obj)=>
-	{
-		let v = obj.target.value as string;
-
-		if (v.trim().length === 0)
-		{
-			setPass( (prevState: PasswordStateI): PasswordStateI=>
-			{
-				let match = pass.rePass === v;
-				return {...prevState, pass: v, passValid: false, passError: globalCTX.locale.required, passMatch: match};
-			});
-		}
-
-		else
-		{
-			setPass( (prevState: PasswordStateI): PasswordStateI=>
-			{
-				let match = pass.rePass === v;
-				return {...prevState, pass: v, passValid: true, passMatch: match};
-			});
-		}
-
-	}, [globalCTX, pass]);
-
-	//RePass Handler (Multiple states in one object)
-	const onRePassHandler 	= React.useCallback( (obj)=>
-	{
-		let v = obj.target.value as string;
-
-		if (v.trim().length === 0)
-		{
-			setPass( (prevState: PasswordStateI): PasswordStateI=>
-			{
-				let match = pass.pass === v;
-				return {...prevState, rePass: v, rePassValid: false, rePassError: globalCTX.locale.required, passMatch: match};
-			});
-		}
-
-		else
-		{
-			setPass( (prevState: PasswordStateI): PasswordStateI=>
-			{
-				let match = pass.pass === v;
-				return {...prevState, rePass: v, rePassValid: true, passMatch: match};
-			});
-		}
-
-	}, [globalCTX, pass]);
-
-
-	//Check form validity as a whole.
-	const checkFormValidity = React.useCallback((): boolean=>
-	{
-		let valid = true;
-
-		if (username.trim().length === 0)
-		{
-			setUsernameValid(false);
-			setUsernameError(globalCTX.locale.required);
-			valid = false;
-		}
-
-		if (email.trim().length === 0)
-		{
-			setEmailValid(false);
-			setEmailError(globalCTX.locale.required);
-			valid = false;
-		}
-
-		if (pass.pass.trim().length === 0)
-		{
-			setPass( (prevPass: PasswordStateI):PasswordStateI=>
-			{
-				return {...prevPass, passValid: false, passError: globalCTX.locale.required}
-			});
-			valid = false;
-		}
-
-		if (pass.rePass.trim().length === 0)
-		{
-			setPass( (prevPass: PasswordStateI):PasswordStateI=>
-			{
-				return {...prevPass, rePassValid: false, rePassError: globalCTX.locale.required}
-			});
-			valid = false;
-		}
-
-		return valid;
-	}, [username, email, pass, globalCTX]);
-
-
-	//Submit Form Functionality.
-	const {onFormSubmit} = props;
-	const onSubmit = React.useCallback(()=>
-	{
-		let account: AccountModel = new AccountModel();
-
-		if ( !checkFormValidity() ) return;
-
-		account.m_username 	= username;
-		account.m_email 	= email;
-		account.m_password 	= pass.pass;
-
-		onFormSubmit(account);
-
-	}, [username, email, pass, onFormSubmit, checkFormValidity]);
 
 
 	//Rendering.
@@ -194,18 +68,22 @@ const RegisterForm: React.FC<RegisterFormI> = (props)=>
 		<React.Fragment>
 
 			<form className={styles.registerForm}
+			onSubmit={formik.handleSubmit}
 			>
-
+				{/*Form Title*/}
 				<div className={styles.registerTitle}>
 					<label className={styles.registerTitleLabel}>
 						{globalCTX.locale.register}
 					</label>
 				</div>
 
+				{/*Username Input*/}
 				<MuiMat.TextField
 				style={{marginTop: margins, marginBottom: margins}}
-				onChange={onUsernameHandler}
-				value={username}
+				onChange={formik.handleChange}
+				onBlur={formik.handleBlur}
+				value={formik.values.username}
+				name="username"
 				fullWidth
 				required
 				label={globalCTX.locale.username}
@@ -215,16 +93,19 @@ const RegisterForm: React.FC<RegisterFormI> = (props)=>
 					  <MuiIcons.AccountCircle />
 					</MuiMat.InputAdornment>
 				)}}
-				error={!usernameValid}
-				helperText={!usernameValid ? usernameError : ''}
+				error={formik.touched.username && Boolean(formik.errors.username)}
+				helperText={formik.touched.username && formik.errors.username}
 				/>
 
+				{/*Email Input*/}
 				<MuiMat.TextField
 				style={{marginTop: margins, marginBottom: margins}}
 				fullWidth
 				required
-				value={email}
-				onChange={onEmailHandler}
+				name="email"
+				value={formik.values.email}
+				onChange={formik.handleChange}
+				onBlur={formik.handleBlur}
 				label={globalCTX.locale.email}
 				type="email"
 				placeholder={globalCTX.locale.emailHint}
@@ -233,15 +114,18 @@ const RegisterForm: React.FC<RegisterFormI> = (props)=>
 					  <MuiIcons.AlternateEmail />
 					</MuiMat.InputAdornment>
 				)}}
-				error={!emailValid}
-				helperText={!emailValid ? emailError : ''}
+				error={formik.touched.email && Boolean(formik.errors.email)}
+				helperText={formik.touched.email && formik.errors.email}
 				/>
 
+				{/*Password Input*/}
 				<MuiMat.TextField
 				style={{marginTop: margins, marginBottom: margins}}
 				fullWidth
-				value={pass.pass}
-				onChange={onPassHandler}
+				name="pass"
+				value={formik.values.pass}
+				onChange={formik.handleChange}
+				onBlur={formik.handleBlur}
 				label={globalCTX.locale.password}
 				type="password"
 				placeholder={globalCTX.locale.passwordHint}
@@ -250,15 +134,18 @@ const RegisterForm: React.FC<RegisterFormI> = (props)=>
 					  <MuiIcons.Key />
 					</MuiMat.InputAdornment>
 				)}}
-				error={!pass.passValid}
-				helperText={!pass.passValid ? pass.passError : ''}
+				error={formik.touched.pass && Boolean(formik.errors.pass)}
+				helperText={formik.touched.pass && formik.errors.pass}
 				/>
 
+				{/*Re-enter Password Input*/}
 				<MuiMat.TextField
 				style={{marginTop: margins, marginBottom: margins}}
 				fullWidth
-				value={pass.rePass}
-				onChange={onRePassHandler}
+				name="repass"
+				value={formik.values.repass}
+				onChange={formik.handleChange}
+				onBlur={formik.handleBlur}
 				label={globalCTX.locale.re_password}
 				type="password"
 				placeholder={globalCTX.locale.re_passwordHint}
@@ -267,20 +154,22 @@ const RegisterForm: React.FC<RegisterFormI> = (props)=>
 					  <MuiIcons.LockReset />
 					</MuiMat.InputAdornment>
 				)}}
-				error={!pass.rePassValid || !pass.passMatch}
-				helperText={!pass.rePassValid ? pass.rePassError : '' || !pass.passMatch ? globalCTX.locale.invalidPassMatch : ''}
+				error={formik.touched.repass && Boolean(formik.errors.repass)}
+				helperText={formik.touched.repass && formik.errors.repass}
 				/>
 
+				{/*Submit Button*/}
 				<div className={styles.registerButton}>
 					<MuiMat.Button 
+					type="submit"
 					variant="contained"
 					startIcon={<MuiIcons.Login />}
-					onClick={onSubmit}
-					disabled={!usernameValid || !pass.passValid || !emailValid || !pass.rePassValid}
+					disabled={!formik.isValid}
 					>
 						{globalCTX.locale.register}
 					</MuiMat.Button>
 				</div>
+				
 
 			</form>
 		</React.Fragment>
