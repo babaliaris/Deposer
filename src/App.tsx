@@ -34,7 +34,7 @@ function App()
           
           <RouterDOM.Route path='/login' element={<Login />} />
 
-          <RouterDOM.Route path='*' element={<RouterDOM.Navigate to="/register" replace/>}/>
+          <RouterDOM.Route path='*' element={<RouterDOM.Navigate to="/login" replace/>}/>
           
         </RouterDOM.Routes>
 
